@@ -1,4 +1,4 @@
-package com.equinor.rdf.RecSparql;
+package com.equinor.rdf.recsparql;
 
 
 /*
@@ -39,8 +39,8 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.BeforeClass;
 import org.junit.Test ;
 
+import com.equinor.rdf.recsparql.ParserRecARQ;
 import com.equinor.rdf.recsparql.RecSyntax;
-import com.equinor.rdf.recsparql.lang.recarq.ParserRecARQ;
 
 /** Test API use of models, including some union graph cases : see also DatasetGraphTests */
 
@@ -87,11 +87,11 @@ public class RecSparqlTest
 
     String queryString =  "WITH RECURSIVE SELECT * {?s ?p ?o}" ;
     @BeforeClass public static void init(){
-        SPARQLParserRegistry.get().add(RecSyntax.syntaxRecSPARQL, new SPARQLParserFactory() {
+        SPARQLParserRegistry.get().add(RecSyntax.syntaxRecSPARQL11, new SPARQLParserFactory() {
 
             @Override
             public boolean accept(Syntax syntax) {
-                { return RecSyntax.syntaxRecSPARQL.equals(syntax) ; } 
+                { return RecSyntax.syntaxRecSPARQL11.equals(syntax) ; } 
             }
 
             @Override

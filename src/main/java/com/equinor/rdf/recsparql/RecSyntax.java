@@ -7,6 +7,8 @@ public class RecSyntax extends Syntax {
         super(s);
     }
 
-    public static final Syntax syntaxRecSPARQL
+    public static final Syntax syntaxRecSPARQL11
     = Syntax.make("http://rdf.equinor.com/query/RecSPARQL_11");
+    public static final Syntax syntaxRecARQ
+    = Syntax.make("http://rdf.equinor.com/query/RecARQ");
 }

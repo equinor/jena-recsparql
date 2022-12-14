@@ -24,15 +24,16 @@ import org.apache.jena.atlas.json.io.JSONHandler ;
 import org.apache.jena.atlas.json.io.JSONHandlerBase ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.lang.SPARQLParserBase ;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementNamedGraph;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.Template;
 
+import com.equinor.rdf.recsparql.RecSyntax;
 import com.equinor.rdf.recsparql.lang.RecSPARQLParserBase;
 
 /* 
@@ -40,7 +41,7 @@ import com.equinor.rdf.recsparql.lang.RecSPARQLParserBase;
  * Due to access modifier constraints, the class could not be merely extended but had
  * to be copied wholesale, in order to make the SPARQL-extension in this package as
  * small a code addition as possible, in the interest of maintainability.
- * sourced from https://github.com/apache/jena/blob/b0f24f4b9dc3860db67e69fc1161db661785191d/jena-arq/src/main/java/org/apache/jena/sparql/lang/arq/ARQParserBase.java
+ * sourced from https://github.com/apache/jena/tree/jena-4.6.1/jena-arq/src/main/java/org/apache/jena/sparql/lang/arq/ARQParserBase.java
  * 
  * NB: DO NOT CHANGE THIS CLASS UNLESS THE ORIGINAL HAS BEEN UPDATED AND YOU ARE
  *     PORTING CHANGES.
@@ -54,7 +55,7 @@ import com.equinor.rdf.recsparql.lang.RecSPARQLParserBase;
 */
 public class RecARQParserBase 
     extends RecSPARQLParserBase
-    implements RecARQLParser11Constants
+    implements RecARQParserConstants
 {
     JSONHandler handler = new JSONHandlerBase() ;
     
@@ -109,5 +110,10 @@ public class RecARQParserBase
           elg.addElement(el);
         }
         return elg;
+    }
+
+    @Override
+    protected Syntax getSyntax() {
+        return RecSyntax.syntaxRecARQ;
     }
 };

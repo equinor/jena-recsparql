@@ -16,32 +16,27 @@
  * limitations under the License.
  */
 
-package com.equinor.rdf.recsparql.lang.recsparql_11;
+package com.equinor.rdf.recsparql;
 
 import java.io.Reader ;
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.lang.SPARQLParser;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
 
-import com.equinor.rdf.recsparql.RecursiveNode;
-import com.equinor.rdf.recsparql.lang.recarq.ParserRecARQ;
+import com.equinor.rdf.recsparql.lang.recarq.RecARQParser;
 
-import org.apache.jena.query.QueryFactory;
-
-
-public class ParserRecSPARQL11 extends SPARQLParser
+public class ParserRecARQ extends SPARQLParser
 {
 
-    private interface Action { void exec(SPARQLParser11 parser) throws Exception ; }
+    private interface Action { void exec(RecARQParser parser) throws Exception ; }
     
     @Override
     protected Query parse$(final Query query, String queryString)
@@ -50,49 +45,33 @@ public class ParserRecSPARQL11 extends SPARQLParser
 
         Action action = new Action() {
             @Override
-            public void exec(SPARQLParser11 parser) throws Exception
+            public void exec(RecARQParser parser) throws Exception
             {
                 parser.QueryUnit() ;
             }
         } ;
         
-        if (isRecursive(queryString))
-        {
-            RecQuery recQuery = new RecQuery();
-        	RecursiveNode rn = new RecursiveNode();
-        	rn.init(queryString);
-        	recQuery.initRecursiveFields(rn);
-        	for(String[] arrStr : rn.QueriesConstruct)
-        	{
-        		RecQuery q = new RecQuery();
-        		perform(q,arrStr[1],action);
-        		q.recursiveURI = arrStr[0];
-        		recQuery.ConstructRecursiveQueries.add(q);	
-        	}
-        	perform(recQuery,rn.OuterQuery,action);
-    		return recQuery;
+        if (query instanceof RecQuery) {
+            query.setSyntax(RecSyntax.syntaxSPARQL_11);
+            perform((RecQuery) query, queryString, action);
+            return query;
+        } else {
+            RecQuery actualQuery = new RecQuery();
+            IRIx base = query.getBase();
+            if (base != null) {
+                actualQuery.setBase(base);
+            }
+            perform(actualQuery, queryString, action);
+            return actualQuery;
         }
-        query.setSyntax(Syntax.syntaxSPARQL_11) ;
-
-        perform(query, queryString, action) ;
-        return query ;
-    }
-    
-    public boolean isRecursive(String queryString)
-    {
-    	if(queryString.contains("WITH RECURSIVE"))
-    	{
-    		return true;
-    	}
-    	return false;
     }
     
     public static Element parseElement(String string)
     {
-        final Query query = new Query () ;
+        final RecQuery query = new RecQuery () ;
         Action action = new Action() {
             @Override
-            public void exec(SPARQLParser11 parser) throws Exception
+            public void exec(RecARQParser parser) throws Exception
             {
                 Element el = parser.GroupGraphPattern() ;
                 query.setQueryPattern(el) ;
@@ -104,10 +83,10 @@ public class ParserRecSPARQL11 extends SPARQLParser
     
     public static Template parseTemplate(String string)
     {
-        final Query query = new Query () ;
+        final RecQuery query = new RecQuery () ;
         Action action = new Action() {
             @Override
-            public void exec(SPARQLParser11 parser) throws Exception
+            public void exec(RecARQParser parser) throws Exception
             {
                 Template t = parser.ConstructTemplate() ;
                 query.setConstructTemplate(t) ;
@@ -122,20 +101,20 @@ public class ParserRecSPARQL11 extends SPARQLParser
     private static void perform(RecQuery query, String string, Action action)
     {
         Reader in = new StringReader(string) ;
-        SPARQLParser11 parser = new SPARQLParser11(in) ;
+        RecARQParser parser = new RecARQParser(in) ;
 
         try {
             query.setStrict(true) ;
             parser.setQuery(query) ;
             action.exec(parser) ;
         }
-        catch (org.apache.jena.sparql.lang.sparql_11.ParseException ex)
+        catch (com.equinor.rdf.recsparql.lang.recarq.ParseException ex)
         { 
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
                                           ) ; }
-        catch (org.apache.jena.sparql.lang.sparql_11.TokenMgrError tErr)
+        catch (com.equinor.rdf.recsparql.lang.recarq.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;
