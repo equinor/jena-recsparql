@@ -1,4 +1,4 @@
-package com.equinor.rdf.RecSparql;
+package com.equinor.rdf.recsparql;
 
 import org.apache.jena.sparql.algebra.OpExtBuilder;
 import org.apache.jena.sparql.algebra.op.OpExt;

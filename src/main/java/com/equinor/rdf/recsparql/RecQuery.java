@@ -1,4 +1,4 @@
-package com.equinor.rdf.RecSparql;
+package com.equinor.rdf.recsparql;
 
 import java.util.ArrayList;
 

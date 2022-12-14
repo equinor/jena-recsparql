@@ -1,0 +1,46 @@
+void RecursiveQueryUnit(): { }
+{
+  ByteOrderMark()
+  { startQuery() ; }
+  Query() <EOF>
+  { finishQuery() ; }
+}
+
+void RecursiveQuery() : { }
+{    
+  Prologue()
+  ( WithRecursive() )*
+  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery()
+#ifdef ARQ
+    | JsonQuery()
+#endif
+  )
+  ValuesClause()
+}
+
+void WithRecursive() : { String iri ; Token t ;}
+{
+    <WITH_RECURSIVE>
+    iri = SourceSelector()
+    <AS>
+    t = <LBRACE>
+    {   
+        int line = t.beginLine; int column = t.beginColumn; t = null; 
+        startRecursiveConstruct(iri, line, column);
+    }
+    ConstructQuery()
+    t = <RBRACE>
+    {
+        line = t.beginLine; column = t.beginColumn ; t = null; 
+        endRecursiveConstruct(iri, line, column) ;
+    }
+
+}
+
+TOKEN [IGNORE_CASE] :
+{
+// WITH RECURSIVE extension
+    < RECURSIVE: "recursive" >
+//|   < WITH:     "with" > // token already defined in jena/jena-arq/Grammar/main.jj
+|   < WITH_RECURSIVE: <WITH> (<WSC>)* <RECURSIVE> >
+}

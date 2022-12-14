@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.equinor.rdf.RecSparql;
+package com.equinor.rdf.recsparql.lang.recsparql_11;
 
 import java.io.Reader ;
 import java.io.StringReader ;
@@ -32,11 +32,13 @@ import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
 
+import com.equinor.rdf.recsparql.RecursiveNode;
+import com.equinor.rdf.recsparql.lang.recarq.ParserRecARQ;
+
 import org.apache.jena.query.QueryFactory;
-import com.equinor.rdf.RecSparql.RecursiveNode;
 
 
-public class RecSPARQLParser11 extends SPARQLParser
+public class ParserRecSPARQL11 extends SPARQLParser
 {
 
     private interface Action { void exec(SPARQLParser11 parser) throws Exception ; }
@@ -150,7 +152,7 @@ public class RecSPARQLParser11 extends SPARQLParser
         }
         catch (Throwable th)
         {
-            Log.warn(RecSPARQLParser11.class, "Unexpected throwable: ",th) ;
+            Log.warn(ParserRecARQ.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

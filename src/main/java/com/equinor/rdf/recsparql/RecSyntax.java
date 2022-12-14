@@ -1,4 +1,4 @@
-package com.equinor.rdf.RecSparql;
+package com.equinor.rdf.recsparql;
 
 import org.apache.jena.query.Syntax;
 

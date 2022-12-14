@@ -39,6 +39,9 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.BeforeClass;
 import org.junit.Test ;
 
+import com.equinor.rdf.recsparql.RecSyntax;
+import com.equinor.rdf.recsparql.lang.recarq.ParserRecARQ;
+
 /** Test API use of models, including some union graph cases : see also DatasetGraphTests */
 
 public class RecSparqlTest
@@ -92,7 +95,7 @@ public class RecSparqlTest
             }
 
             @Override
-            public SPARQLParser create(Syntax syntax) { return new RecSPARQLParser11() ; } 
+            public SPARQLParser create(Syntax syntax) { return new ParserRecARQ() ; } 
             
         });
         // OpExtRegistry.register(new WithRecursiveOpExtBuilder());

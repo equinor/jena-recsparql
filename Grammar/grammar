@@ -17,7 +17,7 @@
 
 # Parser builder
 
-GRAMMAR="${GRAMMAR:-main.jj}"
+GRAMMAR="${GRAMMAR:-../lib/jena/jena-arq/Grammar/main.jj recsparql.ext.jj}"
 
 # --------------------------------------------------------
 
@@ -30,7 +30,7 @@ function grammar
 ##     NAME="$(echo $N | tr '[:lower:]' '[:upper:]')"
 ##     DIR1="$(echo $N | tr '[:upper:]' '[:lower:]')"
     
-    DIR="../src/main/java/org/apache/jena/sparql/lang/$PKG"
+    DIR="../src/main/java/com/equinor/rdf/recsparql/lang/$PKG"
 
     (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
 
@@ -86,10 +86,14 @@ function grammar
 
 # --------------------------------------------------------
 
+## "Rename" sed script
+RENAME='s/(#define PACKAGE\s+lang\.)(sparql_11|arq)/\1rec\2/;
+        s/(#define (:?CLASS|PARSERBASE)\s+)(\w+Parser(:?Base|11Base)?)/\1Rec\3/'
+
 if [ $# == 0 ]
 then
     # Not sparql10
-    set -- sparql11 arq
+    set -- recsparql11 recarq
     ## echo "Usage: grammar [arq|sparql]" 1>&2
     ## exit 1
     fi
@@ -107,24 +111,28 @@ do
          echo "SPARQL 1.0 - not rebuilt"
           ;;
 
-      sparql11|sparql_11.jj)
+      recsparql11|recsparql_11.jj)
 	  # License header.  cpp is run to exclude comments from \$GRAMMAR
 	  # because thay picks up unwanted material as well as the comments
 	  # in $GRAMMAR
-	  cp header.jj sparql_11.jj
+	  cp ../lib/jena/jena-arq/Grammar/header.jj recsparql_11.jj
           # The parser that is exactly the working group grammar.
-          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_11 >> sparql_11.jj
-          grammar sparql_11.jj sparql_11 SPARQLParser11
+          cat $GRAMMAR \
+          | sed -r "$RENAME"\
+          | cpp -P -DSPARQL -DSPARQL_11 >> sparql_11.jj
+          grammar recsparql_11.jj recsparql_11 SPARQLParser11
           ;;
 
-      arq|arq.jj)
-	  cp header.jj arq.jj
-          cat "$GRAMMAR" | cpp -P -DARQ - >> arq.jj
-          grammar arq.jj arq ARQParser
+      recarq|recarq.jj)
+	  cp ../lib/jena/jena-arq/Grammar/header.jj recarq.jj
+          cat $GRAMMAR \
+          | sed -r "$RENAME" \
+          | cpp -P -DARQ - >> arq.jj
+          grammar recarq.jj recarq ARQParser
           ;;
 
-      all)  grammar sparql
-            grammar arq
+      all)  grammar recsparql_11
+            grammar recarq
 	    # rdqlGrammar
 	    ;;
       *)    echo "**** Unknown grammar: $G" 1>&2
