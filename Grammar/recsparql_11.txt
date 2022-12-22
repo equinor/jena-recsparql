@@ -470,8 +470,8 @@ NON-TERMINALS
 	BlankNode	:=	<BLANK_NODE_LABEL>
 		|	<ANON>
 	IRIREF	:=	<IRIref>
-	RecursiveQueryUnit	:=	ByteOrderMark Query <EOF>
+	RecursiveQueryUnit	:=	ByteOrderMark RecursiveQuery <EOF>
 	RecursiveQuery	:=	Prologue ( WithRecursive )* ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery ) ValuesClause
-	WithRecursive	:=	<WITH_RECURSIVE> SourceSelector <AS> <LBRACE> ConstructQuery <RBRACE>
+	WithRecursive	:=	<WITH_RECURSIVE> SourceSelector <AS> <LBRACE> ConstructQuery ValuesClause <RBRACE>
 
 DOCUMENT END

@@ -20,6 +20,7 @@ package com.equinor.rdf.recsparql;
 
 import java.io.Reader ;
 import java.io.StringReader ;
+import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.irix.IRIx;
@@ -47,7 +48,7 @@ public class ParserRecARQ extends SPARQLParser
             @Override
             public void exec(RecARQParser parser) throws Exception
             {
-                parser.QueryUnit() ;
+                parser.RecursiveQueryUnit() ;
             }
         } ;
         
@@ -96,6 +97,15 @@ public class ParserRecARQ extends SPARQLParser
         return query.getConstructTemplate() ;
     }
     
+    @Override
+    protected void validateParsedQuery(Query query) {
+        if(query instanceof RecQuery){
+            for(var c : ((RecQuery)query).getRecursiveQueries()){
+                super.validateParsedQuery(c.query());
+            }
+        }
+        super.validateParsedQuery(query);
+    }
     
     // All throwable handling.
     private static void perform(RecQuery query, String string, Action action)

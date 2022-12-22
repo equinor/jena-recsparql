@@ -1716,7 +1716,7 @@ void RecursiveQueryUnit(): { }
 {
   ByteOrderMark()
   { startQuery() ; }
-  Query() <EOF>
+  RecursiveQuery() <EOF>
   { finishQuery() ; }
 }
 void RecursiveQuery() : { }
@@ -1738,6 +1738,7 @@ void WithRecursive() : { String iri ; Token t ;}
         startRecursiveConstruct(iri, line, column);
     }
     ConstructQuery()
+    ValuesClause()
     t = <RBRACE>
     {
         line = t.beginLine; column = t.beginColumn ; t = null;

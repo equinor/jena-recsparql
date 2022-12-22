@@ -6197,7 +6197,7 @@ public class RecARQParser extends RecARQParserBase implements RecARQParserConsta
   final public void RecursiveQueryUnit() throws ParseException {
     ByteOrderMark();
     startQuery() ;
-    Query();
+    RecursiveQuery();
     jj_consume_token(0);
     finishQuery() ;
   }
@@ -6249,6 +6249,7 @@ public class RecARQParser extends RecARQParserBase implements RecARQParserConsta
         int line = t.beginLine; int column = t.beginColumn; t = null;
         startRecursiveConstruct(iri, line, column);
     ConstructQuery();
+    ValuesClause();
     t = jj_consume_token(RBRACE);
         line = t.beginLine; column = t.beginColumn ; t = null;
         endRecursiveConstruct(iri, line, column) ;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.equinor.rdf.recsparql.lang.recsparql_11;
+package com.equinor.rdf.recsparql;
 
 import java.io.Reader ;
 import java.io.StringReader ;
@@ -31,8 +31,7 @@ import org.apache.jena.sparql.lang.SPARQLParser;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
 
-import com.equinor.rdf.recsparql.RecQuery;
-import com.equinor.rdf.recsparql.RecSyntax;
+import com.equinor.rdf.recsparql.lang.recsparql_11.RecSPARQLParser11;
 
 public class ParserRecSPARQL11 extends SPARQLParser
 {
@@ -48,7 +47,7 @@ public class ParserRecSPARQL11 extends SPARQLParser
             @Override
             public void exec(RecSPARQLParser11 parser) throws Exception
             {
-                parser.QueryUnit() ;
+                parser.RecursiveQueryUnit() ;
             }
         } ;
         

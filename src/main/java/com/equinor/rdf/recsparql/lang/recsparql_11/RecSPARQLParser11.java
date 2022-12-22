@@ -4901,7 +4901,7 @@ public class RecSPARQLParser11 extends RecSPARQLParser11Base implements RecSPARQ
   final public void RecursiveQueryUnit() throws ParseException {
     ByteOrderMark();
     startQuery() ;
-    Query();
+    RecursiveQuery();
     jj_consume_token(0);
     finishQuery() ;
   }
@@ -4950,6 +4950,7 @@ public class RecSPARQLParser11 extends RecSPARQLParser11Base implements RecSPARQ
         int line = t.beginLine; int column = t.beginColumn; t = null;
         startRecursiveConstruct(iri, line, column);
     ConstructQuery();
+    ValuesClause();
     t = jj_consume_token(RBRACE);
         line = t.beginLine; column = t.beginColumn ; t = null;
         endRecursiveConstruct(iri, line, column) ;
